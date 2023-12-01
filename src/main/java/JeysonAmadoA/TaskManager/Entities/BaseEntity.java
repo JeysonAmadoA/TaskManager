@@ -2,14 +2,12 @@ package JeysonAmadoA.TaskManager.Entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@MappedSuperclass
 @Getter
-@Setter
+@MappedSuperclass
 public abstract class BaseEntity implements Serializable {
 
     @Id
@@ -29,12 +27,23 @@ public abstract class BaseEntity implements Serializable {
         this.setDeletedAt(LocalDateTime.now()) ;
     }
 
-    public void commitUpdate(Long userId) {
+    public void commitUpdate() {
         this.setUpdatedAt(LocalDateTime.now());
     }
 
-    public void commitCreate(Long userId) {
+    public void commitCreate() {
         this.setCreatedAt(LocalDateTime.now());
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
 }
