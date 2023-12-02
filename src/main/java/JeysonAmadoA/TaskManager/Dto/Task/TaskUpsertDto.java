@@ -3,15 +3,13 @@ package JeysonAmadoA.TaskManager.Dto.Task;
 import lombok.Data;
 
 @Data
-public class TaskDto {
-
-    private Long id;
+public class TaskUpsertDto {
 
     private String taskName;
 
-    private TaskTypeDto taskType;
+    private Long taskTypeId;
 
-    private TaskStatusDto taskStatus;
+    private Long taskStatusId;
 
     private String description;
 }

@@ -1,5 +1,6 @@
 package JeysonAmadoA.TaskManager.Http.Controller;
 
+import JeysonAmadoA.TaskManager.Dto.Task.TaskUpsertDto;
 import JeysonAmadoA.TaskManager.Dto.Task.TaskDto;
 import JeysonAmadoA.TaskManager.Interfaces.Services.Task.TaskServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import java.util.List;
 @RequestMapping("/tasks")
 public class TaskController {
 
-
     private final TaskServiceInterface taskService;
     @Autowired
     public TaskController(TaskServiceInterface taskService) {
@@ -21,9 +21,9 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createTask(@RequestBody TaskDto taskDto) {
+    public ResponseEntity<String> createTask(@RequestBody TaskUpsertDto taskUpsertDto) {
         try {
-            TaskDto createdTask = this.taskService.createTask(taskDto);
+            TaskUpsertDto createdTask = this.taskService.createTask(taskUpsertDto);
             String response = "Tarea " + createdTask.getTaskName() + " creada con exito";
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
@@ -42,7 +42,7 @@ public class TaskController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<TaskDto>> gatAllTask() {
+    public ResponseEntity<List<TaskDto>> getAllTask() {
         List<TaskDto> allTasks = this.taskService.getAllTasks();
         return ResponseEntity.ok(allTasks);
     }
@@ -53,19 +53,19 @@ public class TaskController {
         return ResponseEntity.ok(tasksByStatus);
     }
 
-    @GetMapping("/categories/{taskTypeId}")
+    @GetMapping("/type/{taskTypeId}")
     public ResponseEntity<List<TaskDto>> filterByType(@PathVariable Long taskTypeId) {
         List<TaskDto> tasksByType = this.taskService.getTasksByType(taskTypeId);
         return ResponseEntity.ok(tasksByType);
     }
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<String> updateTask(@PathVariable Long id, @RequestBody TaskDto updateDto) {
+    public ResponseEntity<String> updateTask(@PathVariable Long id, @RequestBody TaskUpsertDto updateDto) {
         try {
             TaskDto updatedTask = this.taskService.updateTask(id, updateDto);
             return updatedTask != null
-                    ? ResponseEntity.status(HttpStatus.CREATED).body("Tarea actualizada con exito")
-                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tarea no encontrada");
+                    ? ResponseEntity.status(HttpStatus.OK).body("Tarea actualizada con exito")
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -77,8 +77,8 @@ public class TaskController {
         try {
             boolean isDeleted = this.taskService.deleteTask(id);
             return isDeleted
-                    ? ResponseEntity.status(HttpStatus.CREATED).body("Tarea eliminada con exito")
-                    : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tarea no encontrada");
+                    ? ResponseEntity.status(HttpStatus.OK).body("Tarea eliminada con exito")
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

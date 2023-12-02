@@ -7,13 +7,31 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TaskMapper extends BaseMap<TaskDto, TaskEntity> {
-    public TaskMapper() {
+    private final TaskTypeMapper taskTypeMapper;
+    private final TaskStatusMapper taskStatusMapper;
+
+    public TaskMapper(TaskTypeMapper taskTypeMapper, TaskStatusMapper taskStatusMapper) {
         super(TaskDto.class, TaskEntity.class);
+        this.taskTypeMapper = taskTypeMapper;
+        this.taskStatusMapper = taskStatusMapper;
     }
 
-    public TaskEntity update(TaskEntity taskEntity, TaskDto taskDto){
-        this.modelMapper.getConfiguration().setSkipNullEnabled(true);
-        modelMapper.map(taskDto, taskEntity);
-        return taskEntity;
+    @Override
+    public TaskDto toDto(TaskEntity entity) {
+        TaskDto dto = super.toDto(entity);
+        dto.setTaskType(taskTypeMapper.toDto(entity.getTaskType()));
+        dto.setTaskStatus(taskStatusMapper.toDto(entity.getTaskStatus()));
+        return dto;
     }
+
+    @Override
+    public TaskEntity toEntity(TaskDto dto) {
+        TaskEntity entity = super.toEntity(dto);
+        entity.setTaskType(taskTypeMapper.toEntity(dto.getTaskType()));
+        entity.setTaskStatus(taskStatusMapper.toEntity(dto.getTaskStatus()));
+        return entity;
+    }
+
+
+
 }
