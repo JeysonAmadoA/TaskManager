@@ -59,6 +59,19 @@ public class TaskController {
         return ResponseEntity.ok(tasksByType);
     }
 
+    @PatchMapping("/completed/{id}")
+    public ResponseEntity<String> completeTask(@PathVariable Long id) {
+        try {
+            boolean isCompleted = this.taskService.setCompleteTask(id);
+            return isCompleted
+                    ? ResponseEntity.status(HttpStatus.OK).body("Tarea completada")
+                    : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
     @PatchMapping("/update/{id}")
     public ResponseEntity<String> updateTask(@PathVariable Long id, @RequestBody TaskUpsertDto updateDto) {
         try {

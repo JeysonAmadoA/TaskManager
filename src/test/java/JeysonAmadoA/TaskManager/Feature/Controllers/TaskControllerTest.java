@@ -114,6 +114,32 @@ public class TaskControllerTest {
     }
 
     @Test
+    public void completeTaskTest() throws UpdateTaskException {
+
+        Long taskId = 1L;
+
+        when(this.taskService.setCompleteTask(any(Long.class))).thenReturn(true);
+
+        ResponseEntity<String> response = this.taskController.completeTask(taskId);
+
+        verify(this.taskService, times(1)).setCompleteTask(taskId);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Tarea completada", response.getBody());
+    }
+
+    @Test
+    public void completeTaskNotFoundTest() throws UpdateTaskException {
+
+        Long taskId = 1L;
+
+        when(this.taskService.setCompleteTask(any(Long.class))).thenReturn(false);
+        ResponseEntity<String> response = this.taskController.completeTask(taskId);
+
+        verify(this.taskService, times(1)).setCompleteTask(taskId);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
     public void updateTaskTest() throws UpdateTaskException {
 
         Long taskId = 1L;

@@ -158,6 +158,39 @@ public class TaskServiceTest {
     }
 
     @Test
+    public void setCompleteTaskTest() throws UpdateTaskException {
+        TaskEntity task = new TaskEntity();
+        Long taskId = 1L;
+
+        when(this.taskRepo.findById(taskId)).thenReturn(Optional.of(task));
+        when(this.taskRepo.save(any(TaskEntity.class))).thenReturn(task);
+
+        boolean isCompleted = this.taskService.setCompleteTask(taskId);
+
+        verify(this.taskRepo, times(1)).findById(taskId);
+        verify(this.taskRepo, times(1)).save(task);
+        assertTrue(isCompleted);
+    }
+
+    @Test
+    public void setCompleteTaskFailTest() {
+        TaskEntity task = new TaskEntity();
+
+        Long taskId = 1L;
+
+        when(this.taskRepo.findById(taskId)).thenReturn(Optional.of(task));
+        when(this.taskRepo.save(any(TaskEntity.class))).thenThrow(new RuntimeException("Error en tiempo de ejecución"));
+
+        try {
+            this.taskService.setCompleteTask(taskId);
+        } catch (UpdateTaskException e) {
+            assertEquals("Error al actualizar la tarea. Error en tiempo de ejecución", e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
     public void updateTaskTest() throws UpdateTaskException {
         TaskEntity task = new TaskEntity();
         TaskUpsertDto upsertDto = new TaskUpsertDto();

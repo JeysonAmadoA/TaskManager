@@ -19,6 +19,8 @@ public interface TaskServiceInterface {
 
     List<TaskDto> getTasksByType(Long taskTypeId);
 
+    boolean setCompleteTask(Long taskId) throws UpdateTaskException;
+
     TaskDto updateTask(Long taskId, TaskUpsertDto updateTaskDto) throws UpdateTaskException;
 
     boolean deleteTask(Long taskId) throws DeleteTaskException;

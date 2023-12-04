@@ -13,6 +13,8 @@ import JeysonAmadoA.TaskManager.Repositories.Task.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static JeysonAmadoA.TaskManager.Entities.Task.TaskEntity.COMPLETED_STATE_ID;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,6 +73,20 @@ public class TaskService implements TaskServiceInterface {
         return tasks.stream()
                 .map(this.taskMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public boolean setCompleteTask(Long taskId) throws UpdateTaskException {
+        try {
+            TaskEntity taskToComplete = this.taskRepo.findById(taskId).orElse(null);
+            if (taskToComplete != null){
+                taskToComplete.setTaskStatusId(COMPLETED_STATE_ID);
+                taskToComplete.commitUpdate();
+                this.taskRepo.save(taskToComplete);
+                return true;
+            } else return false;
+        }catch (Exception e){
+            throw new UpdateTaskException(e.getMessage());
+        }
     }
 
     @Override

@@ -13,6 +13,10 @@ import org.hibernate.annotations.Where;
 @Data
 public class TaskEntity extends BaseEntity {
 
+    public static final Long IN_PROCESS_STATE_ID  = 1L;
+    public static final Long COMPLETED_STATE_ID  = 2L;
+    public static final Long CANCELED_STATE_ID  = 3L;
+
     @Column(name = "task_name", nullable = false)
     private String taskName;
 
